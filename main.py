@@ -82,11 +82,11 @@ def update_reservation(reservation: Reservation, new_start_date: date = Body(), 
     if not room_avaliable(reservation.room_id, str(new_start_date), str(new_end_date)):
         raise HTTPException(400)
     collection.update_one({"name": reservation.name,
-                           "start_date": reservation.start_date,
-                           "end_date": reservation.end_date,
+                           "start_date": reservation.start_date.strftime("%Y-%m-%d"),
+                           "end_date": reservation.end_date.strftime("%Y-%m-%d"),
                            "room_id": reservation.room_id},
-                          {"start_date": new_start_date,
-                           "end_date": new_end_date})
+                          update={"$set": {"start_date": new_start_date.isoformat(),
+                                           "end_date": new_end_date.isoformat()}})
 
 
 @app.delete("/reservation/delete")
